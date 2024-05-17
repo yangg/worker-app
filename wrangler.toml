@@ -3,6 +3,12 @@ name = "r2"
 main = "src/index.ts"
 compatibility_date = "2024-05-12"
 compatibility_flags = ["nodejs_compat"]
+account_id = "949e4298736acf3008b7da6e9829a7f4"
+workers_dev = true
+
+[[r2_buckets]]
+binding = "BUCKET_APP"
+bucket_name = "app"
 
 # Automatically place your workloads in an optimal location to minimize latency.
 # If you are running back-end logic in a Worker, running it closer to your back-end infrastructure
