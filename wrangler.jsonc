@@ -4,12 +4,18 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "worker-app",
+	"name": "r2",
 	"main": "src/index.ts",
 	"compatibility_date": "2025-05-05",
 	"observability": {
 		"enabled": true
-	}
+	},
+	"r2_buckets": [
+		{
+			"binding": "BUCKET_APP",
+			"bucket_name": "app"
+		}
+	]
 	/**
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
