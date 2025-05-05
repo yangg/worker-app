@@ -21,7 +21,7 @@ async function uploadFile(env: Env, key: string, file: ReadableStream | Blob, co
 	await env.BUCKET_APP.put(key, file, {
 		httpMetadata: meta
 	});
-	return { message: `${key} Uploaded!`, meta }
+	return { message: `Uploaded!`, key, meta }
 }
 
 export default {
@@ -60,10 +60,10 @@ export default {
 				break
 			case 'DELETE':
 				await env.BUCKET_APP.delete(key);
-				res = { message: `${key} deleted!` }
+				res = { message: `Deleted!`, key }
 				break
 			case 'PATCH':
-				res = { message: `Cache cleared for ${key}`}
+				res = { message: `Cache cleared`, key}
 				break
 			default:
 				return Response.json({ message: 'Method not allowed' }, { status: 405 });
