@@ -83,6 +83,31 @@ export default {
 		const object = await env.BUCKET_APP.get(key);
 
 		if (!object) {
+			// Handle all routes under /jeelyton-tool/
+			if (key.startsWith('jeelyton-tool/')) {
+				const githubPath = key.replace(/^jeelyton-tool\//, '');
+				const githubUrl = `https://github.com/jeelyton/jeelyton-tools/${githubPath}`;
+				
+				// Fetch directly from GitHub
+				const response = await fetch(githubUrl);
+				
+				// Create new response with the same body and status
+				const newResponse = new Response(response.body, {
+					status: response.status,
+					statusText: response.statusText,
+					headers: response.headers
+				});
+
+				// save to bucket
+				const clonedResponse = newResponse.clone();
+				const arrayBuffer = await clonedResponse.arrayBuffer();
+				await env.BUCKET_APP.put(key, arrayBuffer, {
+					httpMetadata: {
+						contentType: newResponse.headers.get('content-type') ?? undefined
+					}
+				});
+				return newResponse;
+			}
 			return Response.json({ message: "Object not found"}, { status: 404 });
 		}
 
