@@ -15,6 +15,12 @@
 			"binding": "BUCKET_APP",
 			"bucket_name": "app"
 		}
+	],
+	"kv_namespaces": [
+		{
+			"binding": "KV_NS0",
+			"id": "1457cc7735bf4bdc9bd22949ebd0554f"
+		}
 	]
 	/**
 	 * Smart Placement

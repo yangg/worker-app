@@ -83,16 +83,35 @@ export default {
 		const object = await env.BUCKET_APP.get(key);
 
 		if (!object) {
-			// Handle all routes under /jeelyton-tool/
-			if (key.startsWith('jeelyton-tool/')) {
-				const githubPath = key.replace(/^jeelyton-tool\//, '');
-				const githubUrl = `https://github.com/jeelyton/jeelyton-tools/${githubPath}`;
-				
-				// Fetch directly from GitHub
-				const response = await fetch(githubUrl);
-				
+			// Handle all routes under /JLT-toolkit/
+			// https://github.com/jeelyton/JLT-toolkit/releases/download/app-v0.1.3/latest.json
+			if (key.startsWith('JLT-toolkit/')) {
+				// const origin = request.headers.get('origin')
+				const githubUrl = `https://github.com/jeelyton/${key}`;
+
+				if(key === 'JLT-toolkit/releases/latest/download/latest.json') {
+					// Get latest version from KV
+					const latestVersion = await env.KV_NS0.get('toolkitVersion') || 'app-v0.1.6';
+					const redirectUrl = `https://s2.17ch.cn/JLT-toolkit/releases/download/${latestVersion}/latest.json`
+					return Response.redirect(redirectUrl, 302);
+				}
+
+				// Fetch directly from GitHub with redirect following
+				const response = await fetch(githubUrl, {
+					redirect: 'follow'
+				});
+
+				if (!response.ok) {
+					return Response.json({ message: "Failed to fetch from GitHub" }, { status: response.status });
+				}
+
+				let body: ReadableStream | string | null = response.body;
+				if(response.headers.get('content-disposition')?.includes('latest.json')) {
+					body = (await response.text()).replace('https://github.com/jeelyton/', 'https://s2.17ch.cn/');
+				}
+
 				// Create new response with the same body and status
-				const newResponse = new Response(response.body, {
+				const newResponse = new Response(body, {
 					status: response.status,
 					statusText: response.statusText,
 					headers: response.headers
